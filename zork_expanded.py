@@ -14,8 +14,12 @@ import json
 from enum import Enum, auto
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Tuple, Set, Union
+from zork_io import zork_input, zork_print
+from zork_logging import game_log, system_log, init as init_logging
 import random
 import textwrap
+
+_PLAYER_NAME = ""
 
 # Constants and Enumerations
 class Direction(Enum):
@@ -2176,14 +2180,21 @@ class ZorkGame:
         self._show_intro()
         
         # Get player name
-        name = input("What is your name, adventurer? ").strip()
+        name = zork_input("What is your name, adventurer? ").strip()
         if name:
             self.player_name = name
-            print(f"\nWelcome, {self.player_name}!")
+            _PLAYER_NAME = name
+            zork_print(f"\nWelcome, {self.player_name}!")
         else:
-            print(f"\nWelcome, Adventurer!")
+            zork_print(f"\nWelcome, Adventurer!")
+            _PLAYER_NAME = "Adventurer"
+
+        # log game start
+        init_logging(_PLAYER_NAME)
+        game_log(f"Game started for player: {_PLAYER_NAME}")
+        system_log(f"Game started for player: {_PLAYER_NAME}")
         
-        print()
+        zork_print()
         self._look()
         
         # Give troll his axe
@@ -2196,7 +2207,7 @@ class ZorkGame:
                 self._check_random_events()
                 
                 # Get input
-                user_input = input("> ").strip().lower()
+                user_input = zork_input("> ").strip().lower()
                 
                 if not user_input:
                     continue
@@ -2212,26 +2223,26 @@ class ZorkGame:
                 if self.lamp_on:
                     self.lamp_life -= 1
                     if self.lamp_life == 30:
-                        print("Your lamp is getting dim.")
+                        zork_print("Your lamp is getting dim.")
                     elif self.lamp_life == 0:
-                        print("Your lamp has run out of power.")
+                        zork_print("Your lamp has run out of power.")
                         self.lamp_on = False
                         self.objects["lamp"].set_flag(ObjectFlag.LIGHT, False)
                         self.objects["lamp"].set_flag(ObjectFlag.TURNEDON, False)
                         self._check_light()
                 
             except KeyboardInterrupt:
-                print("\nUse QUIT to exit.")
+                zork_print("\nUse QUIT to exit.")
             except EOFError:
                 self.game_over = True
                 
     def _show_intro(self):
         """Show game intro"""
-        print("ZORK I: The Great Underground Empire")
-        print("Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.")
-        print("ZORK is a registered trademark of Infocom, Inc.")
-        print("Revision 88 / Serial number 840726")
-        print()
+        zork_print("ZORK I: The Great Underground Empire")
+        zork_print("Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.")
+        zork_print("ZORK is a registered trademark of Infocom, Inc.")
+        zork_print("Revision 88 / Serial number 840726")
+        zork_print()
         
     def _parse_command(self, user_input: str) -> ParsedCommand:
         """Parse user input into a command"""
@@ -2398,7 +2409,7 @@ class ZorkGame:
             
         # Handle verbs
         if not command.verb:
-            print("I don't understand that.")
+            zork_print("I don't understand that.")
             return
             
         # Dispatch to appropriate handler
@@ -2453,7 +2464,7 @@ class ZorkGame:
         if handler:
             handler(command)
         else:
-            print("I don't know how to do that.")
+            zork_print("I don't know how to do that.")
             
     def _go(self, direction: Direction):
         """Move in a direction"""
@@ -2470,9 +2481,9 @@ class ZorkGame:
                     self._check_light()
                     self._look()
                 else:
-                    print("The trap door is closed.")
+                    zork_print("The trap door is closed.")
             else:
-                print("You can't go that way.")
+                zork_print("You can't go that way.")
             return
             
         # Grating
@@ -2481,7 +2492,7 @@ class ZorkGame:
                 self.current_room = "clearing"
                 self._look()
             else:
-                print("The grating is locked.")
+                zork_print("The grating is locked.")
             return
             
         # Window
@@ -2490,13 +2501,13 @@ class ZorkGame:
                 self.current_room = "kitchen"
                 self._look()
             else:
-                print("The window is closed.")
+                zork_print("The window is closed.")
             return
             
         # Strange Passage
         if self.current_room == "living_room" and direction == Direction.WEST:
             if not self.cyclops_fled:
-                print("The door is nailed shut.")
+                zork_print("The door is nailed shut.")
             else:
                 self.current_room = "strange_passage"
                 self._look()
@@ -2506,37 +2517,37 @@ class ZorkGame:
         if self.current_room == "cyclops_room" and direction == Direction.UP:
             cyclops = self.actors["cyclops"]
             if cyclops.location == "cyclops_room" and cyclops.active:
-                print("The cyclops blocks the staircase.")
+                zork_print("The cyclops blocks the staircase.")
                 return
                 
         # Troll blocks passages
         if self.current_room == "troll_room":
             troll = self.actors["troll"]
             if troll.location == "troll_room" and troll.active and not self.troll_payment:
-                print("The troll blocks your way!")
+                zork_print("The troll blocks your way!")
                 return
                 
         # Spirits block entrance to Hades
         if self.current_room == "entrance_to_hades" and direction == Direction.SOUTH:
             if not self.spirits_released:
-                print(self.actors["spirits"].messages["block"])
+                zork_print(self.actors["spirits"].messages["block"])
                 return
                 
         # Dam/Reservoir navigation
         if self.current_room == "reservoir":
             if not self.dam_open:
-                print("You can't swim in the deep water.")
+                zork_print("You can't swim in the deep water.")
                 return
                 
         # Rainbow
         if self.current_room == "end_of_rainbow" and direction == Direction.EAST:
             if not self.rainbow_solid:
-                print("Can you walk on water vapor?")
+                zork_print("Can you walk on water vapor?")
                 return
                 
         # Slide is one-way
         if self.current_room == "slide_room" and direction == Direction.DOWN:
-            print("Wheeeee!")
+            zork_print("Wheeeee!")
             self.current_room = "cellar"
             self._look()
             return
@@ -2545,13 +2556,13 @@ class ZorkGame:
         if direction in room.exits:
             new_room = room.exits[direction]
             if new_room == self.current_room:  # Can't go that way
-                print("You can't go that way.")
+                zork_print("You can't go that way.")
             else:
                 self.current_room = new_room
                 self._check_light()
                 self._look()
         else:
-            print("You can't go that way.")
+            zork_print("You can't go that way.")
             
     def _look(self, command: Optional[ParsedCommand] = None):
         """Look around or at something"""
@@ -2567,21 +2578,21 @@ class ZorkGame:
             
         # Room name
         if room.id in self.visited_rooms and not self.verbose:
-            print(room.name)
+            zork_print(room.name)
         else:
-            print(room.name)
-            print(room.description)
+            zork_print(room.name)
+            zork_print(room.description)
             
         self.visited_rooms.add(room.id)
         
         # Special room descriptions
         if self.current_room == "loud_room":
-            print(f"The sound level is: {self.loud_room_level}")
+            zork_print(f"The sound level is: {self.loud_room_level}")
             
         # Check for actors
         for actor_id, actor in self.actors.items():
             if actor.location == self.current_room and actor.active:
-                print(actor.messages.get("first_encounter", actor.description))
+                zork_print(actor.messages.get("first_encounter", actor.description))
                 
         # List visible objects
         room_objects = []
@@ -2590,13 +2601,13 @@ class ZorkGame:
                 # Special handling
                 if obj_id == "trap_door":
                     if obj.has_flag(ObjectFlag.OPEN):
-                        print("There is an open trap door here.")
+                        zork_print("There is an open trap door here.")
                     else:
-                        print("There is a closed trap door here.")
+                        zork_print("There is a closed trap door here.")
                 elif obj_id == "grating" and self.objects["leaves"].location != "clearing":
                     continue  # Don't show grating until leaves moved
                 elif obj.initial_text and room.id not in self.visited_rooms:
-                    print(obj.initial_text)
+                    zork_print(obj.initial_text)
                 else:
                     room_objects.append(obj)
                     
@@ -2607,56 +2618,56 @@ class ZorkGame:
                     contents = [o for o in self.objects.values() if o.location == obj_id]
                     if contents:
                         if obj.has_flag(ObjectFlag.TRANSPARENT):
-                            print(f"The {obj.name} contains:")
+                            zork_print(f"The {obj.name} contains:")
                         else:
-                            print(f"The {obj.name} is open. It contains:")
+                            zork_print(f"The {obj.name} is open. It contains:")
                         for item in contents:
-                            print(f"  A {item.description}")
+                            zork_print(f"  A {item.description}")
                             
         # List other objects
         if room_objects:
             for obj in room_objects:
                 if obj.id not in ["case", "rug", "window", "control_panel", "prayer", "mirror_south", "mirror_north", "chimney", "chain", "switch", "green_button", "red_button"]:
-                    print(f"There is a {obj.description} here.")
+                    zork_print(f"There is a {obj.description} here.")
                     
     def _examine(self, command: ParsedCommand):
         """Examine an object"""
         if not command.direct_object:
-            print("What do you want to examine?")
+            zork_print("What do you want to examine?")
             return
             
         # Check if it's an actor
         if command.direct_object in self.actors:
             actor = self.actors[command.direct_object]
             if actor.location == self.current_room:
-                print(actor.description)
+                zork_print(actor.description)
             else:
-                print("You don't see that here.")
+                zork_print("You don't see that here.")
             return
             
         obj = self.objects[command.direct_object]
-        print(obj.examine_text)
+        zork_print(obj.examine_text)
         
         # Show contents if container
         if obj.has_flag(ObjectFlag.CONTAINER):
             if obj.has_flag(ObjectFlag.OPEN) or obj.has_flag(ObjectFlag.TRANSPARENT):
                 contents = [o for o in self.objects.values() if o.location == obj.id]
                 if contents:
-                    print(f"The {obj.name} contains:")
+                    zork_print(f"The {obj.name} contains:")
                     for item in contents:
-                        print(f"  A {item.description}")
+                        zork_print(f"  A {item.description}")
                 elif obj.has_flag(ObjectFlag.OPEN):
-                    print(f"The {obj.name} is empty.")
+                    zork_print(f"The {obj.name} is empty.")
                     
     def _take(self, command: ParsedCommand):
         """Take an object"""
         if not command.direct_object:
-            print("What do you want to take?")
+            zork_print("What do you want to take?")
             return
             
         # Can't take actors
         if command.direct_object in self.actors:
-            print("The " + command.direct_object + " is too heavy.")
+            zork_print("The " + command.direct_object + " is too heavy.")
             return
             
         obj_id = command.direct_object
@@ -2664,12 +2675,12 @@ class ZorkGame:
         
         # Check if takeable
         if not obj.has_flag(ObjectFlag.TAKEABLE):
-            print("You can't take that.")
+            zork_print("You can't take that.")
             return
             
         # Check if already carried
         if obj_id in self.player_inventory:
-            print("You already have that.")
+            zork_print("You already have that.")
             return
             
         # Check if in a container
@@ -2677,18 +2688,18 @@ class ZorkGame:
             container = self.objects[obj.location]
             if container.has_flag(ObjectFlag.CONTAINER):
                 if not (container.has_flag(ObjectFlag.OPEN) or container.has_flag(ObjectFlag.TRANSPARENT)):
-                    print(f"You can't see any {obj.name} here.")
+                    zork_print(f"You can't see any {obj.name} here.")
                     return
                     
         # Check inventory limit
         if len(self.player_inventory) >= 7:
-            print("Your load is too heavy.")
+            zork_print("Your load is too heavy.")
             return
             
         # Take it
         self.player_inventory.append(obj_id)
         obj.location = "player"
-        print("Taken.")
+        zork_print("Taken.")
         
         # Special cases
         if obj.has_flag(ObjectFlag.TREASURE):
@@ -2697,20 +2708,20 @@ class ZorkGame:
     def _drop(self, command: ParsedCommand):
         """Drop an object"""
         if not command.direct_object:
-            print("What do you want to drop?")
+            zork_print("What do you want to drop?")
             return
             
         obj_id = command.direct_object
         
         if obj_id not in self.player_inventory:
-            print("You don't have that.")
+            zork_print("You don't have that.")
             return
             
         # Drop it
         self.player_inventory.remove(obj_id)
         obj = self.objects[obj_id]
         obj.location = self.current_room
-        print("Dropped.")
+        zork_print("Dropped.")
         
         # Check if dropped in trophy case
         if self.current_room == "living_room":
@@ -2718,25 +2729,25 @@ class ZorkGame:
             if case.has_flag(ObjectFlag.OPEN) and obj.has_flag(ObjectFlag.TREASURE):
                 obj.location = "case"
                 self.treasures_deposited += 1
-                print(f"The {obj.name} is now in the trophy case.")
+                zork_print(f"The {obj.name} is now in the trophy case.")
                 self.score += obj.value
                 
     def _inventory(self, command: ParsedCommand):
         """Show inventory"""
         if not self.player_inventory:
-            print("You are empty-handed.")
+            zork_print("You are empty-handed.")
         else:
-            print("You are carrying:")
+            zork_print("You are carrying:")
             for obj_id in self.player_inventory:
                 obj = self.objects[obj_id]
-                print(f"  A {obj.description}")
+                zork_print(f"  A {obj.description}")
                 if obj.has_flag(ObjectFlag.TURNEDON):
-                    print("    (providing light)")
+                    zork_print("    (providing light)")
                     
     def _open(self, command: ParsedCommand):
         """Open something"""
         if not command.direct_object:
-            print("What do you want to open?")
+            zork_print("What do you want to open?")
             return
             
         obj_id = command.direct_object
@@ -2744,7 +2755,7 @@ class ZorkGame:
         
         # Special case for window
         if obj_id == "window":
-            print("With great effort, you open the window far enough to allow entry.")
+            zork_print("With great effort, you open the window far enough to allow entry.")
             obj.set_flag(ObjectFlag.OPEN, True)
             self.rooms["behind_house"].exits[Direction.WEST] = "kitchen"
             self.rooms["behind_house"].exits[Direction.IN] = "kitchen"
@@ -2753,38 +2764,38 @@ class ZorkGame:
         # Special case for egg
         if obj_id == "jeweled_egg":
             if obj.has_flag(ObjectFlag.OPEN):
-                print("It's already open.")
+                zork_print("It's already open.")
             else:
-                print("You have neither the tools nor the expertise.")
+                zork_print("You have neither the tools nor the expertise.")
             return
             
         # Check if openable
         if not (obj.has_flag(ObjectFlag.CONTAINER) or obj.has_flag(ObjectFlag.DOOR)):
-            print("You can't open that.")
+            zork_print("You can't open that.")
             return
             
         # Check if already open
         if obj.has_flag(ObjectFlag.OPEN):
-            print("It's already open.")
+            zork_print("It's already open.")
             return
             
         # Check if locked
         if obj.has_flag(ObjectFlag.LOCKED):
-            print("It's locked.")
+            zork_print("It's locked.")
             return
             
         # Open it
         obj.set_flag(ObjectFlag.OPEN, True)
         obj.set_flag(ObjectFlag.CLOSED, False)
-        print("Opened.")
+        zork_print("Opened.")
         
         # Show contents
         if obj.has_flag(ObjectFlag.CONTAINER):
             contents = [o for o in self.objects.values() if o.location == obj_id]
             if contents:
-                print(f"Opening the {obj.name} reveals:")
+                zork_print(f"Opening the {obj.name} reveals:")
                 for item in contents:
-                    print(f"  A {item.description}")
+                    zork_print(f"  A {item.description}")
                     
         # Special case for coffin
         if obj_id == "coffin":
@@ -2793,14 +2804,14 @@ class ZorkGame:
         # Special case for machine
         if obj_id == "machine":
             if self.objects["pile_of_coal"].location == "machine":
-                print("The machine comes to life and creates a beautiful diamond!")
+                zork_print("The machine comes to life and creates a beautiful diamond!")
                 self.objects["diamond"].location = "machine"
                 del self.objects["pile_of_coal"]
                 
     def _close(self, command: ParsedCommand):
         """Close something"""
         if not command.direct_object:
-            print("What do you want to close?")
+            zork_print("What do you want to close?")
             return
             
         obj_id = command.direct_object
@@ -2808,32 +2819,32 @@ class ZorkGame:
         
         # Check if closeable
         if not (obj.has_flag(ObjectFlag.CONTAINER) or obj.has_flag(ObjectFlag.DOOR)):
-            print("You can't close that.")
+            zork_print("You can't close that.")
             return
             
         # Check if already closed
         if obj.has_flag(ObjectFlag.CLOSED):
-            print("It's already closed.")
+            zork_print("It's already closed.")
             return
             
         # Close it
         obj.set_flag(ObjectFlag.OPEN, False)
         obj.set_flag(ObjectFlag.CLOSED, True)
-        print("Closed.")
+        zork_print("Closed.")
         
     def _read(self, command: ParsedCommand):
         """Read something"""
         if not command.direct_object:
-            print("What do you want to read?")
+            zork_print("What do you want to read?")
             return
             
         obj = self.objects[command.direct_object]
         
         if not obj.has_flag(ObjectFlag.READABLE):
-            print("There's nothing to read.")
+            zork_print("There's nothing to read.")
             return
             
-        print(obj.examine_text)
+        zork_print(obj.examine_text)
         
         # Special case for black book
         if command.direct_object == "book":
@@ -2841,88 +2852,88 @@ class ZorkGame:
             
         # Special case for prayer
         if command.direct_object == "prayer":
-            print("The prayer mentions the following words: \"bell\", \"book\", and \"candles\".")
+            zork_print("The prayer mentions the following words: \"bell\", \"book\", and \"candles\".")
             
     def _turn_on(self, command: ParsedCommand):
         """Turn on something"""
         if not command.direct_object:
-            print("What do you want to turn on?")
+            zork_print("What do you want to turn on?")
             return
             
         obj_id = command.direct_object
         obj = self.objects[obj_id]
         
         if not obj.has_flag(ObjectFlag.TURNNABLE):
-            print("You can't turn that on.")
+            zork_print("You can't turn that on.")
             return
             
         if obj_id == "lamp":
             if self.lamp_on:
-                print("It's already on.")
+                zork_print("It's already on.")
             else:
                 if self.lamp_life > 0:
                     self.lamp_on = True
                     obj.set_flag(ObjectFlag.TURNEDON, True)
                     obj.set_flag(ObjectFlag.LIGHT, True)
                     obj.examine_text = "It is a shiny brass lamp. It is lit."
-                    print("The lamp is now on.")
+                    zork_print("The lamp is now on.")
                     if not self.rooms[self.current_room].has_flag(RoomFlag.LIT):
                         self._look()
                 else:
-                    print("The lamp has run out of power.")
+                    zork_print("The lamp has run out of power.")
                     
     def _turn_off(self, command: ParsedCommand):
         """Turn off something"""
         if not command.direct_object:
-            print("What do you want to turn off?")
+            zork_print("What do you want to turn off?")
             return
             
         obj_id = command.direct_object
         obj = self.objects[obj_id]
         
         if not obj.has_flag(ObjectFlag.TURNNABLE):
-            print("You can't turn that off.")
+            zork_print("You can't turn that off.")
             return
             
         if obj_id == "lamp":
             if not self.lamp_on:
-                print("It's already off.")
+                zork_print("It's already off.")
             else:
                 self.lamp_on = False
                 obj.set_flag(ObjectFlag.TURNEDON, False)
                 obj.set_flag(ObjectFlag.LIGHT, False)
                 obj.examine_text = "It is a shiny brass lamp. It is not currently lit."
-                print("The lamp is now off.")
+                zork_print("The lamp is now off.")
                 self._check_light()
                 
     def _move(self, command: ParsedCommand):
         """Move/push an object"""
         if not command.direct_object:
-            print("What do you want to move?")
+            zork_print("What do you want to move?")
             return
             
         obj_id = command.direct_object
         
         if obj_id == "rug":
             if self.objects["trap_door"].location is None:
-                print("With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door.")
+                zork_print("With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door.")
                 self.objects["trap_door"].location = "living_room"
             else:
-                print("Having moved the rug previously, you find it impossible to move it again.")
+                zork_print("Having moved the rug previously, you find it impossible to move it again.")
         elif obj_id == "leaves":
             if self.objects["grating"].location is None:
-                print("In disturbing the pile of leaves, a grating is revealed.")
+                zork_print("In disturbing the pile of leaves, a grating is revealed.")
                 self.objects["grating"].location = "clearing"
                 self.rooms["clearing"].exits[Direction.DOWN] = "grating_room"
             else:
-                print("You've already done that.")
+                zork_print("You've already done that.")
         else:
-            print("You can't move that.")
+            zork_print("You can't move that.")
             
     def _push(self, command: ParsedCommand):
         """Push something"""
         if not command.direct_object:
-            print("What do you want to push?")
+            zork_print("What do you want to push?")
             return
             
         obj_id = command.direct_object
@@ -2931,18 +2942,18 @@ class ZorkGame:
         if obj_id in ["green_button", "red_button", "button"] and self.current_room == "dam":
             if obj_id == "green_button" or (obj_id == "button" and not self.dam_open):
                 if not self.dam_open:
-                    print("The sluice gates open and water pours through the dam.")
+                    zork_print("The sluice gates open and water pours through the dam.")
                     self.dam_open = True
                     self._drain_reservoir()
                 else:
-                    print("The gates are already open.")
+                    zork_print("The gates are already open.")
             elif obj_id == "red_button" or (obj_id == "button" and self.dam_open):
                 if self.dam_open:
-                    print("The sluice gates close and water starts to accumulate.")
+                    zork_print("The sluice gates close and water starts to accumulate.")
                     self.dam_open = False
                     self._fill_reservoir()
                 else:
-                    print("The gates are already closed.")
+                    zork_print("The gates are already closed.")
         else:
             self._move(command)
             
@@ -2979,7 +2990,7 @@ class ZorkGame:
     def _attack(self, command: ParsedCommand):
         """Attack something"""
         if not command.direct_object:
-            print("What do you want to attack?")
+            zork_print("What do you want to attack?")
             return
             
         target = command.direct_object
@@ -2988,76 +2999,76 @@ class ZorkGame:
         if target in self.actors:
             actor = self.actors[target]
             if actor.location != self.current_room:
-                print("You don't see that here.")
+                zork_print("You don't see that here.")
                 return
                 
             if target == "troll":
                 if "sword" in self.player_inventory:
-                    print("The troll takes a vicious swipe at you with his axe, but you deftly dodge.")
-                    print("You charge the troll, who attempts to dodge, but is unsuccessful.")
-                    print(actor.messages["death"])
+                    zork_print("The troll takes a vicious swipe at you with his axe, but you deftly dodge.")
+                    zork_print("You charge the troll, who attempts to dodge, but is unsuccessful.")
+                    zork_print(actor.messages["death"])
                     actor.active = False
                     actor.location = None
                     if self.objects["axe"].location == "troll":
                         self.objects["axe"].location = "troll_room"
                 else:
-                    print("Trying to attack the troll with your bare hands is suicidal.")
+                    zork_print("Trying to attack the troll with your bare hands is suicidal.")
                     self._death("The troll hits you with a crushing blow.")
                     
             elif target == "thief":
-                print("The thief is a formidable opponent. He dodges your attack.")
+                zork_print("The thief is a formidable opponent. He dodges your attack.")
                 if random.randint(1, 3) == 1:
-                    print(actor.messages["stiletto"])
+                    zork_print(actor.messages["stiletto"])
                     self._death("The thief stabs you with his stiletto.")
                     
             elif target == "cyclops":
-                print("The cyclops laughs at your puny attack!")
-                print("The cyclops hits you with a crushing blow.")
+                zork_print("The cyclops laughs at your puny attack!")
+                zork_print("The cyclops hits you with a crushing blow.")
                 self._death("The cyclops has knocked you senseless.")
                 
             elif target == "spirits":
-                print("How can you attack spirits?")
+                zork_print("How can you attack spirits?")
                 
             elif target == "bat":
-                print("The bat flies away from your attack.")
+                zork_print("The bat flies away from your attack.")
                 actor.location = None
                 
         else:
-            print("I don't know what you're trying to attack.")
+            zork_print("I don't know what you're trying to attack.")
             
     def _eat(self, command: ParsedCommand):
         """Eat something"""
         if not command.direct_object:
-            print("What do you want to eat?")
+            zork_print("What do you want to eat?")
             return
             
         obj = self.objects[command.direct_object]
         
         if not obj.has_flag(ObjectFlag.EDIBLE):
-            print(f"I don't think the {obj.name} would agree with you.")
+            zork_print(f"I don't think the {obj.name} would agree with you.")
             return
             
         if command.direct_object not in self.player_inventory:
-            print("You don't have that.")
+            zork_print("You don't have that.")
             return
             
-        print("Thank you very much. It really hit the spot.")
+        zork_print("Thank you very much. It really hit the spot.")
         self.player_inventory.remove(command.direct_object)
         del self.objects[command.direct_object]
         
     def _drink(self, command: ParsedCommand):
         """Drink something"""
         if not command.direct_object:
-            print("What do you want to drink?")
+            zork_print("What do you want to drink?")
             return
             
         obj = self.objects[command.direct_object]
         
         if not obj.has_flag(ObjectFlag.DRINKABLE):
-            print("You can't drink that!")
+            zork_print("You can't drink that!")
             return
             
-        print("Thank you very much. I was very thirsty.")
+        zork_print("Thank you very much. I was very thirsty.")
         if command.direct_object == "water":
             self.objects["bottle"].examine_text = "The glass bottle is empty."
             del self.objects["water"]
@@ -3065,7 +3076,7 @@ class ZorkGame:
     def _give(self, command: ParsedCommand):
         """Give something to someone"""
         if not command.direct_object:
-            print("What do you want to give?")
+            zork_print("What do you want to give?")
             return
             
         # Simple implementation - check for troll
@@ -3073,77 +3084,77 @@ class ZorkGame:
             if command.direct_object in self.player_inventory:
                 obj = self.objects[command.direct_object]
                 if obj.has_flag(ObjectFlag.TREASURE):
-                    print("The troll catches your treasure and scurries away out of sight.")
+                    zork_print("The troll catches your treasure and scurries away out of sight.")
                     self.player_inventory.remove(command.direct_object)
                     del self.objects[command.direct_object]
                     self.actors["troll"].active = False
                     self.actors["troll"].location = None
                     self.troll_payment = True
                 else:
-                    print("The troll is not interested in your offering.")
+                    zork_print("The troll is not interested in your offering.")
             else:
-                print("You don't have that.")
+                zork_print("You don't have that.")
         else:
-            print("There's no one here to give it to.")
+            zork_print("There's no one here to give it to.")
             
     def _unlock(self, command: ParsedCommand):
         """Unlock something"""
         if not command.direct_object:
-            print("What do you want to unlock?")
+            zork_print("What do you want to unlock?")
             return
             
         obj_id = command.direct_object
         
         if obj_id == "grating" and self.objects["grating"].location is not None:
             if "skeleton_key" in self.player_inventory:
-                print("The grating is unlocked.")
+                zork_print("The grating is unlocked.")
                 self.grating_unlocked = True
                 self.objects["grating"].set_flag(ObjectFlag.LOCKED, False)
                 self.rooms["grating_room"].exits[Direction.UP] = "clearing"
             else:
-                print("You don't have the right key.")
+                zork_print("You don't have the right key.")
         else:
-            print("You can't unlock that.")
+            zork_print("You can't unlock that.")
             
     def _lock(self, command: ParsedCommand):
         """Lock something"""
         if not command.direct_object:
-            print("What do you want to lock?")
+            zork_print("What do you want to lock?")
             return
             
-        print("You can't lock that.")
+        zork_print("You can't lock that.")
         
     def _tie(self, command: ParsedCommand):
         """Tie rope to something"""
         if not command.direct_object:
-            print("What do you want to tie?")
+            zork_print("What do you want to tie?")
             return
             
         if command.direct_object == "rope" and "rope" in self.player_inventory:
             if self.current_room == "dome_room":
-                print("The rope is tied to the wooden railing.")
+                zork_print("The rope is tied to the wooden railing.")
                 self.objects["rope"].location = "dome_room"
                 self.player_inventory.remove("rope")
                 self.rooms["dome_room"].exits[Direction.DOWN] = "torch_room"
             elif self.current_room == "shaft_room":
-                print("The rope is tied to the iron framework.")
+                zork_print("The rope is tied to the iron framework.")
                 self.objects["rope"].location = "shaft_room"
                 self.player_inventory.remove("rope")
                 self.rooms["shaft_room"].exits[Direction.DOWN] = "drafty_room"
             else:
-                print("You can't tie the rope to anything here.")
+                zork_print("You can't tie the rope to anything here.")
         else:
-            print("You can't tie that.")
+            zork_print("You can't tie that.")
             
     def _untie(self, command: ParsedCommand):
         """Untie rope"""
         if not command.direct_object:
-            print("What do you want to untie?")
+            zork_print("What do you want to untie?")
             return
             
         if command.direct_object == "rope":
             if self.objects["rope"].location in ["dome_room", "shaft_room"]:
-                print("The rope is untied.")
+                zork_print("The rope is untied.")
                 self.player_inventory.append("rope")
                 self.objects["rope"].location = "player"
                 if self.current_room == "dome_room":
@@ -3151,14 +3162,14 @@ class ZorkGame:
                 elif self.current_room == "shaft_room":
                     del self.rooms["shaft_room"].exits[Direction.DOWN]
             else:
-                print("The rope is not tied to anything.")
+                zork_print("The rope is not tied to anything.")
         else:
-            print("You can't untie that.")
+            zork_print("You can't untie that.")
             
     def _burn(self, command: ParsedCommand):
         """Burn something"""
         if not command.direct_object:
-            print("What do you want to burn?")
+            zork_print("What do you want to burn?")
             return
             
         obj = self.objects[command.direct_object]
@@ -3175,55 +3186,55 @@ class ZorkGame:
                 
             if has_flame:
                 if command.direct_object == "candles":
-                    print("The candles are lit.")
+                    zork_print("The candles are lit.")
                     self.candles_lit = True
                     obj.set_flag(ObjectFlag.LIGHT, True)
                     obj.set_flag(ObjectFlag.TURNEDON, True)
                 else:
-                    print(f"The {obj.name} burns to ashes.")
+                    zork_print(f"The {obj.name} burns to ashes.")
                     if command.direct_object in self.player_inventory:
                         self.player_inventory.remove(command.direct_object)
                     del self.objects[command.direct_object]
             else:
-                print("You have no flame source.")
+                zork_print("You have no flame source.")
         else:
-            print("You can't burn that.")
+            zork_print("You can't burn that.")
             
     def _extinguish(self, command: ParsedCommand):
         """Extinguish something"""
         if not command.direct_object:
-            print("What do you want to extinguish?")
+            zork_print("What do you want to extinguish?")
             return
             
         if command.direct_object == "candles" and self.candles_lit:
-            print("The candles are extinguished.")
+            zork_print("The candles are extinguished.")
             self.candles_lit = False
             self.objects["candles"].set_flag(ObjectFlag.LIGHT, False)
             self.objects["candles"].set_flag(ObjectFlag.TURNEDON, False)
         elif command.direct_object == "torch":
-            print("You can't extinguish that.")
+            zork_print("You can't extinguish that.")
         else:
             self._turn_off(command)
             
     def _ring(self, command: ParsedCommand):
         """Ring the bell"""
         if not command.direct_object:
-            print("What do you want to ring?")
+            zork_print("What do you want to ring?")
             return
             
         if command.direct_object == "bell" and command.direct_object in self.player_inventory:
-            print("Ding, dong.")
+            zork_print("Ding, dong.")
             self.bell_rung = True
             self._check_exorcism()
         else:
-            print("You can't ring that.")
+            zork_print("You can't ring that.")
             
     def _check_exorcism(self):
         """Check if exorcism conditions are met"""
         if (self.current_room == "entrance_to_hades" and 
             self.bell_rung and self.book_read and self.candles_lit):
-            print("\nSuddenly, the bell, book, and candles begin to glow!")
-            print(self.actors["spirits"].messages["exorcise"])
+            zork_print("\nSuddenly, the bell, book, and candles begin to glow!")
+            zork_print(self.actors["spirits"].messages["exorcise"])
             self.spirits_released = True
             self.actors["spirits"].active = False
             self.actors["spirits"].location = None
@@ -3232,11 +3243,11 @@ class ZorkGame:
     def _wind(self, command: ParsedCommand):
         """Wind something"""
         if not command.direct_object:
-            print("What do you want to wind?")
+            zork_print("What do you want to wind?")
             return
             
         if command.direct_object == "canary" and "golden_canary" in self.player_inventory:
-            print("The canary chirps, slightly off-key, an aria from a forgotten opera. From out of the greenery flies a lovely songbird. It perches on a limb just over your head and opens its beak to sing. As it does so a beautiful brass bauble drops from its mouth, bounces off the top of your head, and lands glimmering in the grass. As the canary winds down, the songbird flies away.")
+            zork_print("The canary chirps, slightly off-key, an aria from a forgotten opera. From out of the greenery flies a lovely songbird. It perches on a limb just over your head and opens its beak to sing. As it does so a beautiful brass bauble drops from its mouth, bounces off the top of your head, and lands glimmering in the grass. As the canary winds down, the songbird flies away.")
             self.objects["bauble"] = GameObject(
                 id="bauble",
                 name="bauble",
@@ -3248,33 +3259,33 @@ class ZorkGame:
                 value=1
             )
         else:
-            print("You can't wind that.")
+            zork_print("You can't wind that.")
             
     def _dig(self, command: ParsedCommand):
         """Dig with shovel"""
         if "shovel" not in self.player_inventory:
-            print("You don't have anything to dig with.")
+            zork_print("You don't have anything to dig with.")
             return
             
         if self.current_room == "white_cliffs_beach_south":
             if self.objects["jeweled_scarab"].location is None:
-                print("You dig in the sand and uncover a beautiful scarab!")
+                zork_print("You dig in the sand and uncover a beautiful scarab!")
                 self.objects["jeweled_scarab"].location = "white_cliffs_beach_south"
             else:
-                print("You find nothing else.")
+                zork_print("You find nothing else.")
         else:
-            print("The ground is too hard to dig here.")
+            zork_print("The ground is too hard to dig here.")
             
     def _fill(self, command: ParsedCommand):
         """Fill something"""
         if not command.direct_object:
-            print("What do you want to fill?")
+            zork_print("What do you want to fill?")
             return
             
         if command.direct_object == "bottle" and command.direct_object in self.player_inventory:
             if self.current_room in ["stream", "reservoir"] or self.rooms[self.current_room].has_flag(RoomFlag.ONWATER):
                 if "water" not in [obj.id for obj in self.objects.values() if obj.location == "bottle"]:
-                    print("The bottle is now full of water.")
+                    zork_print("The bottle is now full of water.")
                     self.objects["water"] = GameObject(
                         id="water",
                         name="water",
@@ -3285,40 +3296,40 @@ class ZorkGame:
                     )
                     self.objects["bottle"].examine_text = "The glass bottle contains:\n  A quantity of water"
                 else:
-                    print("The bottle is already full.")
+                    zork_print("The bottle is already full.")
             else:
-                print("There's no water here.")
+                zork_print("There's no water here.")
         else:
-            print("You can't fill that.")
+            zork_print("You can't fill that.")
             
     def _pour(self, command: ParsedCommand):
         """Pour water"""
         if not command.direct_object:
-            print("What do you want to pour?")
+            zork_print("What do you want to pour?")
             return
             
         if command.direct_object == "water":
             if "water" in [obj.id for obj in self.objects.values() if obj.location == "bottle" and "bottle" in self.player_inventory]:
-                print("The water splashes on the ground and evaporates.")
+                zork_print("The water splashes on the ground and evaporates.")
                 del self.objects["water"]
                 self.objects["bottle"].examine_text = "The glass bottle is empty."
             else:
-                print("You don't have any water.")
+                zork_print("You don't have any water.")
         else:
-            print("You can't pour that.")
+            zork_print("You can't pour that.")
             
     def _pray(self, command: ParsedCommand):
         """Pray at altar"""
         if self.current_room == "altar":
-            print("The ground shakes and a passage opens beneath you!")
+            zork_print("The ground shakes and a passage opens beneath you!")
             self.rooms["altar"].exits[Direction.DOWN] = "cave_1"
         else:
-            print("Nothing happens.")
+            zork_print("Nothing happens.")
             
     def _wave(self, command: ParsedCommand):
         """Wave something"""
         if not command.direct_object:
-            print("What do you want to wave?")
+            zork_print("What do you want to wave?")
             return
             
         obj_id = command.direct_object
@@ -3326,50 +3337,50 @@ class ZorkGame:
         if obj_id == "sceptre" and obj_id in self.player_inventory:
             if self.current_room == "end_of_rainbow" or self.current_room == "aragain_falls":
                 if not self.rainbow_solid:
-                    print("Suddenly, the rainbow appears to become solid and you can walk on it!")
+                    zork_print("Suddenly, the rainbow appears to become solid and you can walk on it!")
                     self.rainbow_solid = True
                     self.rooms["end_of_rainbow"].exits[Direction.EAST] = "on_the_rainbow"
                     self.rooms["on_the_rainbow"].exits[Direction.WEST] = "end_of_rainbow"
                     self.rooms["on_the_rainbow"].exits[Direction.EAST] = "aragain_falls"
                     self.rooms["aragain_falls"].exits[Direction.WEST] = "on_the_rainbow"
                 else:
-                    print("The rainbow seems to waver and become less solid.")
+                    zork_print("The rainbow seems to waver and become less solid.")
                     self.rainbow_solid = False
                     del self.rooms["end_of_rainbow"].exits[Direction.EAST]
                     del self.rooms["aragain_falls"].exits[Direction.WEST]
             else:
-                print("A dazzling display of color briefly emanates from the sceptre.")
+                zork_print("A dazzling display of color briefly emanates from the sceptre.")
         else:
-            print(f"You wave the {self.objects[obj_id].name}.")
+            zork_print(f"You wave the {self.objects[obj_id].name}.")
             
     def _raise(self, command: ParsedCommand):
         """Raise something"""
         if not command.direct_object:
-            print("What do you want to raise?")
+            zork_print("What do you want to raise?")
             return
             
-        print("You can't raise that.")
+        zork_print("You can't raise that.")
         
     def _lower(self, command: ParsedCommand):
         """Lower something"""
         if not command.direct_object:
-            print("What do you want to lower?")
+            zork_print("What do you want to lower?")
             return
             
         if command.direct_object == "basket" and self.current_room == "shaft_room":
             if "basket" in self.player_inventory:
-                print("The basket is lowered on the chain.")
+                zork_print("The basket is lowered on the chain.")
                 self.objects["basket"].location = "drafty_room"
                 self.player_inventory.remove("basket")
             else:
-                print("You're not carrying the basket.")
+                zork_print("You're not carrying the basket.")
         else:
-            print("You can't lower that.")
+            zork_print("You can't lower that.")
             
     def _climb(self, command: ParsedCommand):
         """Climb something"""
         if self.current_room == "dome_room" and self.objects["rope"].location == "dome_room":
-            print("You climb down the rope.")
+            zork_print("You climb down the rope.")
             self.current_room = "torch_room"
             self._look()
         elif Direction.UP in self.rooms[self.current_room].exits:
@@ -3377,27 +3388,27 @@ class ZorkGame:
         elif Direction.DOWN in self.rooms[self.current_room].exits:
             self._go(Direction.DOWN)
         else:
-            print("There's nothing to climb here.")
+            zork_print("There's nothing to climb here.")
             
     def _jump(self, command: ParsedCommand):
         """Jump"""
         if self.current_room == "aragain_falls":
-            print("You jump off the falls...")
+            zork_print("You jump off the falls...")
             self._death("You didn't make it.")
         else:
-            print("Wheee!")
+            zork_print("Wheee!")
             
     def _break(self, command: ParsedCommand):
         """Break something"""
         if not command.direct_object:
-            print("What do you want to break?")
+            zork_print("What do you want to break?")
             return
             
         obj_id = command.direct_object
         
         if obj_id == "mirror_south" or obj_id == "mirror_north":
             if not self.mirror_broken:
-                print("You have broken the mirror. The looking glass is now gone.")
+                zork_print("You have broken the mirror. The looking glass is now gone.")
                 self.mirror_broken = True
                 # Connect the two mirror rooms
                 self.rooms["mirror_room_south"].exits[Direction.NORTH] = "mirror_room_north"
@@ -3405,24 +3416,24 @@ class ZorkGame:
                 del self.objects["mirror_south"]
                 del self.objects["mirror_north"]
             else:
-                print("The mirror is already broken.")
+                zork_print("The mirror is already broken.")
         elif obj_id == "jeweled_egg":
-            print("The egg is now open, but the clumsiness of your attempt has seriously compromised its esthetic appeal.")
+            zork_print("The egg is now open, but the clumsiness of your attempt has seriously compromised its esthetic appeal.")
             self.objects["jeweled_egg"].set_flag(ObjectFlag.OPEN, True)
             self.objects["jeweled_egg"].value = 2  # Reduced value
         else:
-            print("You can't break that.")
+            zork_print("You can't break that.")
             
     def _quit(self, command: ParsedCommand):
         """Quit the game"""
-        response = input("Are you sure you want to quit? ").lower()
+        response = zork_input("Are you sure you want to quit? ").lower()
         if response.startswith('y'):
             self._show_final_score()
             self.game_over = True
             
     def _save(self, command: ParsedCommand):
         """Save the game"""
-        filename = input("Save filename: ")
+        filename = zork_input("Save filename: ")
         try:
             save_data = {
                 'player_name': self.player_name,
@@ -3471,13 +3482,13 @@ class ZorkGame:
                 
             with open(filename, 'w') as f:
                 json.dump(save_data, f)
-            print("Game saved.")
+            zork_print("Game saved.")
         except Exception as e:
-            print(f"Save failed: {e}")
+            zork_print(f"Save failed: {e}")
             
     def _restore(self, command: ParsedCommand):
         """Restore a saved game"""
-        filename = input("Restore filename: ")
+        filename = zork_input("Restore filename: ")
         try:
             with open(filename, 'r') as f:
                 save_data = json.load(f)
@@ -3521,28 +3532,28 @@ class ZorkGame:
                     self.actors[actor_id].health = actor_data['health']
                     self.actors[actor_id].active = actor_data['active']
                     
-            print("Game restored.")
+            zork_print("Game restored.")
             self._look()
         except FileNotFoundError:
-            print("Restore failed. File not found.")
+            zork_print("Restore failed. File not found.")
         except Exception as e:
-            print(f"Restore failed: {e}")
+            zork_print(f"Restore failed: {e}")
             
     def _restart(self, command: ParsedCommand):
         """Restart the game"""
-        response = input("Are you sure you want to restart? ").lower()
+        response = zork_input("Are you sure you want to restart? ").lower()
         if response.startswith('y'):
             saved_name = self.player_name
             self.__init__()
             self.player_name = saved_name
-            print()
+            zork_print()
             self._look()
             
     def _score(self, command: ParsedCommand):
         """Show score"""
         max_score = 350
-        print(f"Your score is {self.score} (total of {max_score} points), in {self.moves} moves.")
-        print(f"This gives you the rank of {self._get_rank()}.")
+        zork_print(f"Your score is {self.score} (total of {max_score} points), in {self.moves} moves.")
+        zork_print(f"This gives you the rank of {self._get_rank()}.")
         
     def _get_rank(self):
         """Get player rank based on score"""
@@ -3565,41 +3576,41 @@ class ZorkGame:
             
     def _show_final_score(self):
         """Show final score and rank"""
-        print()
-        print(f"In {self.moves} moves, you have scored {self.score} points (total of 350 points).")
-        print(f"This gives you the rank of {self._get_rank()}.")
+        zork_print()
+        zork_print(f"In {self.moves} moves, you have scored {self.score} points (total of 350 points).")
+        zork_print(f"This gives you the rank of {self._get_rank()}.")
         if self.deaths > 0:
-            print(f"You died {self.deaths} times.")
+            zork_print(f"You died {self.deaths} times.")
             
     def _version(self, command: ParsedCommand):
         """Show version"""
-        print("ZORK I: The Great Underground Empire")
-        print("Infocom interactive fiction - a fantasy story")
-        print("Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.")
-        print("ZORK is a registered trademark of Infocom, Inc.")
-        print("Revision 88 / Serial number 840726")
-        print(f"Python implementation by haxorthematrix in 2025")
+        zork_print("ZORK I: The Great Underground Empire")
+        zork_print("Infocom interactive fiction - a fantasy story")
+        zork_print("Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.")
+        zork_print("ZORK is a registered trademark of Infocom, Inc.")
+        zork_print("Revision 88 / Serial number 840726")
+        zork_print(f"Python implementation by haxorthematrix in 2025")
         
     def _verbose(self, command: ParsedCommand):
         """Set verbose mode"""
         self.verbose = True
-        print("Maximum verbosity.")
+        zork_print("Maximum verbosity.")
         
     def _brief(self, command: ParsedCommand):
         """Set brief mode"""
         self.verbose = False
-        print("Brief descriptions.")
+        zork_print("Brief descriptions.")
         
     def _wait(self, command: ParsedCommand):
         """Wait a turn"""
-        print("Time passes...")
+        zork_print("Time passes...")
         
     def _diagnose(self, command: ParsedCommand):
         """Show health status"""
         if self.deaths == 0:
-            print("You are in perfect health.")
+            zork_print("You are in perfect health.")
         else:
-            print(f"You have died {self.deaths} times. You are in decent health.")
+            zork_print(f"You have died {self.deaths} times. You are in decent health.")
             
     def _check_light(self):
         """Check if player can see in current room"""
@@ -3611,9 +3622,9 @@ class ZorkGame:
             
         # Check for light source
         if not self._can_see():
-            print("It is pitch black. You are likely to be eaten by a grue.")
+            zork_print("It is pitch black. You are likely to be eaten by a grue.")
             if random.randint(1, 4) == 1:  # 25% chance
-                print("\nOh, no! You have walked into the slavering fangs of a lurking grue!")
+                zork_print("\nOh, no! You have walked into the slavering fangs of a lurking grue!")
                 self._death("You have died.")
                 
     def _can_see(self):
@@ -3638,9 +3649,9 @@ class ZorkGame:
         
     def _death(self, message):
         """Handle player death"""
-        print(message)
+        zork_print(message)
         self.deaths += 1
-        print(f"\n    ****  You have died  ****\n")
+        zork_print(f"\n    ****  You have died  ****\n")
         
         # Drop everything
         for obj_id in self.player_inventory.copy():
@@ -3649,9 +3660,9 @@ class ZorkGame:
             
         # Restore player
         self.current_room = "west_of_house"
-        print("As you take your last breath, you feel yourself being pulled from your body.")
-        print("You float upward, watching your corpse below. Suddenly, you find yourself...")
-        print()
+        zork_print("As you take your last breath, you feel yourself being pulled from your body.")
+        zork_print("You float upward, watching your corpse below. Suddenly, you find yourself...")
+        zork_print()
         self._look()
         
     def _check_random_events(self):
@@ -3664,7 +3675,7 @@ class ZorkGame:
             
             self.thief_here = True
             self.actors["thief"].location = self.current_room
-            print("\nSomeone carrying a large bag just wandered through the room.")
+            zork_print("\nSomeone carrying a large bag just wandered through the room.")
             
             # Thief might steal
             if random.randint(1, 100) <= 20:
@@ -3673,18 +3684,18 @@ class ZorkGame:
                 if treasures:
                     stolen = random.choice(treasures)
                     self.player_inventory.remove(stolen)
-                    print(f"The thief deftly relieves you of the {self.objects[stolen].name}.")
+                    zork_print(f"The thief deftly relieves you of the {self.objects[stolen].name}.")
                     
         # Thief leaves
         elif self.thief_here and random.randint(1, 100) <= 30:
             self.thief_here = False
             self.actors["thief"].location = None
-            print("\nThe thief vanishes into the gloom.")
+            zork_print("\nThe thief vanishes into the gloom.")
             
         # Bat
         if self.current_room == "bat_room" and self.actors["bat"].active:
             if "garlic" in self.player_inventory:
-                print("\n" + self.actors["bat"].messages["garlic"])
+                zork_print("\n" + self.actors["bat"].messages["garlic"])
                 self.actors["bat"].active = False
                 self.actors["bat"].location = None
                 
