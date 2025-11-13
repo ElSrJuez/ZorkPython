@@ -1,0 +1,219 @@
+﻿Diagnose log at 2025-11-13T22:50:29Z
+
+AppPath: C:\Program Files\Git\mingw64\bin\git-credential-manager.exe
+InstallDir: C:\Program Files\Git\mingw64\bin\
+Version: 2.6.0+3c28096588f549cb46f36b552390514356830abe
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Windows
+OSVersion: 10.0 (build 26200)
+Reading environment variables... OK
+ Variables:
+HOMEPATH=\Users\ElSrJ
+DriverData=C:\Windows\System32\Drivers\DriverData
+COMPUTERNAME=PHANTOM
+GIT_TRACE2_PARENT_SID=bf549634-abf2-4276-8e73-9b70b98f7fa4
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+OneDrive=C:\Users\ElSrJ\OneDrive - UNICEF
+ChocolateyLastPathUpdate=133715790853203630
+GTK_BASEPATH=C:\Program Files (x86)\GtkSharp\2.12\
+PYTHON_BASIC_REPL=1
+SESSIONNAME=Console
+BUNDLED_DEBUGPY_PATH=c:\Users\ElSrJ\.vscode\extensions\ms-python.debugpy-2025.16.0-win32-x64\bundled\libs\debugpy
+LANG=en_US.UTF-8
+TMP=C:\Users\ElSrJ\AppData\Local\Temp
+PROCESSOR_REVISION=2100
+PYDEVD_DISABLE_FILE_VALIDATION=1
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW;.CPL
+AMDRMPATH=C:\Program Files\AMD\RyzenMaster\
+GIT_ASKPASS=c:\Program Files\Microsoft VS Code\resources\app\extensions\git\dist\askpass.sh
+POWERSHELL_DISTRIBUTION_CHANNEL=MSI:Windows 10 Pro
+TEMP=C:\Users\ElSrJ\AppData\Local\Temp
+LOCALAPPDATA=C:\Users\ElSrJ\AppData\Local
+MSYSTEM=MINGW64
+TERM=xterm-256color
+VSCODE_PYTHON_AUTOACTIVATE_GUARD=1
+ProgramW6432=C:\Program Files
+PYTHONSTARTUP=c:\Users\ElSrJ\AppData\Roaming\Code\User\workspaceStorage\505f8591e65ed4e68df4c3dc07e9172a\ms-python.python\pythonrc.py
+USERDOMAIN=PHANTOM
+CUDA_PATH_V12_5=C:\Games\AI\CUDA
+Path=C:/Program Files/Git/mingw64/libexec/git-core;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\ElSrJ\bin;C:\Program Files\PowerShell\7;C:\Program Files\Python313\Scripts\;C:\Program Files\Python313\;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;C:\Program Files\ImageMagick-7.1.1-Q16-HDRI;C:\Games\AI\CUDA\bin;C:\Games\AI\CUDA\libnvvp;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Razer\ChromaBroadcast\bin;C:\Program Files\Razer\ChromaBroadcast\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Microsoft VS Code\bin;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files\AutoFirma\AutoFirma;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git LFS;C:\Program Files\NVIDIA Corporation\Nsight Compute 2024.2.0\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files\OpenSSL-Win64\bin;C:\Program Files\dotnet\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\Program Files\Tailscale\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\GitHubCLI\;C:\Program Files\Microsoft\Azure Functions Core Tools\;C:\Program Files\Terraform;C:\Program Files\WinGet\Packages\ggml.llamacpp_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\Program Files (x86)\Google\Cloud SDK\google-cloud-sdk\bin;C:\Program Files\PowerShell\7\;C:\Program Files\WinGet\Links;C:\Users\ElSrJ\AppData\Local\Microsoft\WindowsApps;C:\Users\ElSrJ\AppData\Roaming\npm;C:\Users\ElSrJ\AppData\Local\Microsoft\WindowsApps;C:\Users\ElSrJ\.dotnet\tools;C:\Users\ElSrJ\AppData\Local\Yarn\bin;C:\Users\ElSrJ\AppData\Local\Programs\Fiddler;C:\Users\ElSrJ\AppData\Roaming\Python\Python312\Scripts;C:\Users\ElSrJ\AppData\Local\Programs\Azure Dev CLI\;C:\Program Files\Microsoft\Azure Functions Core Tools;;C:\Users\ElSrJ\.lmstudio\bin;c:\Users\ElSrJ\.vscode\extensions\ms-python.debugpy-2025.16.0-win32-x64\bundled\scripts\noConfigScripts;c:\Users\ElSrJ\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand
+TERM_PROGRAM=vscode
+PROCESSOR_LEVEL=25
+PROCESSOR_IDENTIFIER=AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD
+TMPDIR=C:\Users\ElSrJ\AppData\Local\Temp
+VSCODE_GIT_ASKPASS_EXTRA_ARGS=
+TERM_PROGRAM_VERSION=1.105.1
+VSCODE_GIT_ASKPASS_MAIN=c:\Program Files\Microsoft VS Code\resources\app\extensions\git\dist\askpass-main.js
+ProgramFiles(x86)=C:\Program Files (x86)
+PUBLIC=C:\Users\Public
+NUMBER_OF_PROCESSORS=12
+GIT_LFS_PATH=C:\Program Files\Git LFS
+CommonProgramFiles=C:\Program Files (x86)\Common Files
+VSCODE_INJECTION=1
+VSCODE_DEBUGPY_ADAPTER_ENDPOINTS=c:\Users\ElSrJ\.vscode\extensions\ms-python.debugpy-2025.16.0-win32-x64\.noConfigDebugAdapterEndpoints\endpoint-3d4319f385add950.txt
+VSCODE_GIT_IPC_HANDLE=\\.\pipe\vscode-git-32d04bd140-sock
+CHROME_CRASHPAD_PIPE_NAME=\\.\pipe\crashpad_16180_QSUHKULTYAGOEBOA
+PLINK_PROTOCOL=ssh
+ProgramData=C:\ProgramData
+ProgramFiles=C:\Program Files (x86)
+ChocolateyInstall=C:\ProgramData\chocolatey
+EFC_14044_1592913036=1
+VSCODE_GIT_ASKPASS_NODE=C:\Program Files\Microsoft VS Code\Code.exe
+SystemRoot=C:\WINDOWS
+ORIGINAL_XDG_CURRENT_DESKTOP=undefined
+CUDA_PATH=C:\Games\AI\CUDA
+HOME=C:\Users\ElSrJ
+CommonProgramW6432=C:\Program Files\Common Files
+LOGONSERVER=\\PHANTOM
+GIT_EXEC_PATH=C:/Program Files/Git/mingw64/libexec/git-core
+COLORTERM=truecolor
+USERDOMAIN_ROAMINGPROFILE=PHANTOM
+APPDATA=C:\Users\ElSrJ\AppData\Roaming
+HOMEDRIVE=C:
+OneDriveCommercial=C:\Users\ElSrJ\OneDrive - UNICEF
+PSModulePath=C:\temp\PSPath;C:\Program Files\PowerShell\Modules;c:\program files\powershell\7\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules;C:\Program Files\Intel\Wired Networking\
+USERNAME=ElSrJ
+PROCESSOR_ARCHITEW6432=AMD64
+PROCESSOR_ARCHITECTURE=x86
+USERPROFILE=C:\Users\ElSrJ
+OS=Windows_NT
+ComSpec=C:\WINDOWS\system32\cmd.exe
+SystemDrive=C:
+windir=C:\WINDOWS
+OneDriveConsumer=C:\Users\ElSrJ\OneDrive
+ALLUSERSPROFILE=C:\ProgramData
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is 'C:\Users\ElSrJ\AppData\Local\Temp\'...
+Checking basic file I/O...
+Writing to temporary file 'C:\Users\ElSrJ\AppData\Local\Temp\84c642a0ab90e89c8532bc9a'... OK
+Reading from temporary file 'C:\Users\ElSrJ\AppData\Local\Temp\84c642a0ab90e89c8532bc9a'... OK
+Deleting temporary file 'C:\Users\ElSrJ\AppData\Local\Temp\84c642a0ab90e89c8532bc9a'... OK
+Testing IFileSystem instance...
+UserHomePath: C:\Users\ElSrJ
+UserDataDirectoryPath: C:\Users\ElSrJ\.gcm
+GetCurrentDirectory(): C:\Users\ElSrJ\RepoClones\ZorkPython
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: True
+Exception: None
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com...Sending HEAD request to https://example.com... OK
+ OK
+Acquiring free TCP port... OK
+Testing local HTTP loopback connections...
+Creating new HTTP listener for http://localhost:63326/... OK
+Waiting for loopback connection... OK
+Writing response... OK
+Waiting for response data... OK
+Loopback connection data OK
+
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.47.0.windows.1'
+Locating current repository...Git repository at 'C:/Users/ElSrJ/RepoClones/ZorkPython/.git'
+ OK
+Listing all Git configuration... OK
+Git configuration:
+file:C:/Program Files/Git/etc/gitconfig	diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig	http.sslbackend=schannel
+file:C:/Program Files/Git/etc/gitconfig	core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig	core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig	core.symlinks=true
+file:C:/Program Files/Git/etc/gitconfig	core.editor="C:\\Program Files\\Microsoft VS Code\\bin\\code" --wait
+file:C:/Program Files/Git/etc/gitconfig	pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig	credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig	init.defaultbranch=master
+file:C:/Users/ElSrJ/.gitconfig	user.email=elsrjuez@live.com
+file:C:/Users/ElSrJ/.gitconfig	user.name=Diego Vasquez
+file:C:/Users/ElSrJ/.gitconfig	user.signingkey=C:/Users/ElSrJ/OneDrive/ssh_profiles/ElSrJuez/ElSrJuez.pub
+file:C:/Users/ElSrJ/.gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Users/ElSrJ/.gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Users/ElSrJ/.gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Users/ElSrJ/.gitconfig	filter.lfs.required=true
+file:C:/Users/ElSrJ/.gitconfig	safe.directory=%(prefix)///homeserver/Software/Docker/Compose/host-VM-NJ
+file:C:/Users/ElSrJ/.gitconfig	branch.autosetupmerge=true
+file:C:/Users/ElSrJ/.gitconfig	credential.helper=manager-core
+file:C:/Users/ElSrJ/.gitconfig	credential.helper=
+file:C:/Users/ElSrJ/.gitconfig	credential.helper=C:/Program\ Files/Git/mingw64/bin/git-credential-manager.exe
+file:C:/Users/ElSrJ/.gitconfig	alias.credential-manager=credential-manager-core
+file:C:/Users/ElSrJ/.gitconfig	core.autocrlf=true
+file:C:/Users/ElSrJ/.gitconfig	includeif.hasconfig:remote.*.url:git@coretao-infra-github:*.path=C:/Users/ElSrJ/OneDrive/.git-configs/work.gitconfig
+file:C:/Users/ElSrJ/.gitconfig	includeif.hasconfig:remote.*.url:*@ssh.dev.azure.com:v3/unicef/*.path=C:/Users/ElSrJ/OneDrive/.git-configs/unicef-azuredevops.gitconfig
+file:C:/Users/ElSrJ/.gitconfig	gpg.format=ssh
+file:C:/Users/ElSrJ/.gitconfig	commit.gpgsign=true
+file:C:/Users/ElSrJ/.gitconfig	tag.gpgsign=true
+file:C:/Users/ElSrJ/.gitconfig	gpg.ssh.allowedsignersfile=C:\Users\ElSrJ\.ssh\allowed_signers
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=false
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	core.ignorecase=true
+file:.git/config	submodule.active=.
+file:.git/config	branch.main.vscode-merge-base=origin/main
+file:.git/config	remote.zorkvoice.url=https://github.com/ElSrJuez/ZorkPython.git
+file:.git/config	remote.zorkvoice.fetch=+refs/heads/*:refs/remotes/zorkvoice/*
+
+
+------------
+Diagnostic: Credential storage
+Skipped: False
+Success: True
+Exception: None
+Log:
+ICredentialStore instance is of type: CredentialStore
+Writing test credential... OK
+Reading test credential... OK
+Deleting test credential... OK
+
+------------
+Diagnostic: Microsoft authentication (AAD/MSA)
+Skipped: False
+Success: True
+Exception: None
+Log:
+Broker is not enabled.
+Flow type is: Auto
+Gathering MSAL token cache data... OK
+CacheDirectory: C:\Users\ElSrJ\AppData\Local\.IdentityService
+CacheFileName: msal.cache
+CacheFilePath: C:\Users\ElSrJ\AppData\Local\.IdentityService\msal.cache
+Creating cache helper... OK
+Verifying MSAL token cache persistence... OK
+
+------------
+Diagnostic: GitHub API
+Skipped: False
+Success: True
+Exception: None
+Log:
+Using 'https://github.com/' as API target.
+Querying '/meta' endpoint... OK
+
