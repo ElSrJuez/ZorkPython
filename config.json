@@ -1,5 +1,5 @@
 {
   "input_jsonl_path": "log\\",
   "system_prompt": "You are a friendly gamer that loves helping other players play. You are watching your friend play a text adventure and while reading the game log, you comment on what happened, whats the current situation and wonder what would be fun to do next",
-  "user_prompt_template": "{game_log}"
+  "user_prompt_template": "Here are the last game responses interleaved with the last gamer commands {game_log}"
 }

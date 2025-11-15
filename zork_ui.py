@@ -21,6 +21,9 @@ class RichZorkUI:
         self.zork_lines = []
         self.ai_lines = []
         self.prompt_text = ""
+        self.ai_color_toggle = False  # Track color alternation for AI blocks
+
+
 
     def _get_renderable_lines(self, lines, panel_width, target_height):
         """
@@ -39,7 +42,7 @@ class RichZorkUI:
         
         for line in reversed(lines):
             # Render the text to see how many lines it takes
-            text = Text(line)
+            text = Text.from_markup(line)
             # Use render_lines to get actual line count
             segments = self.console.render_lines(text, self.console.options.update_width(content_width))
             line_count = len(segments)
@@ -63,13 +66,17 @@ class RichZorkUI:
         right_width = total_width - left_width - 1  # adjust for divider
 
         # Get wrapped, scrollable text for each pane
-        left_text = self._get_renderable_lines(self.zork_lines, left_width, body_height)
-        right_text = self._get_renderable_lines(self.ai_lines, right_width, body_height)
+        left_raw = self._get_renderable_lines(self.zork_lines, left_width, body_height)
+        right_raw = self._get_renderable_lines(self.ai_lines, right_width, body_height)
+
+        left_text = Text.from_markup(left_raw)
+        right_text = Text.from_markup(right_raw)
 
         self.layout["left"].update(Panel(left_text, title="Zork Output", border_style="green"))
         self.layout["right"].update(Panel(right_text, title="AI Output", border_style="cyan"))
         self.layout["prompt"].update(Panel(self.prompt_text, title="Prompt", border_style="magenta"))
         return self.layout
+
 
     def start(self):
         self.live = Live(self.render(), console=self.console, refresh_per_second=10)
@@ -105,16 +112,43 @@ class RichZorkUI:
         self.zork_lines.append(text)
         self.live.update(self.render())
 
+    def start_ai_message(self, separator: str | None = None):
+        """Begin a fresh AI message block, optionally prefixed by a separator.
+
+        Also toggles the colour used for this message so consecutive blocks
+        are visually distinct.
+        """
+        self.ai_color_toggle = not self.ai_color_toggle  # Toggle color for new block
+        if separator and self.ai_lines:
+            # separator on its own line
+            self.ai_lines.append(separator)
+        # Start a new block with an opening style tag
+        style = "cyan" if self.ai_color_toggle else "magenta"
+        self.ai_lines.append(f"[{style}]")
+
+        if hasattr(self, "live"):
+            self.live.update(self.render())
+
+
+    def finalize_ai_message(self, full_text: str | None = None):
+        """Hook for any post-message handling (currently no-op)."""
+        # Close the style tag for the current block
+        if self.ai_lines and not self.ai_lines[-1].endswith("[/]"):
+            self.ai_lines[-1] += "[/]"
+        if hasattr(self, "live"):
+            self.live.update(self.render())
+
+
     def write_ai(self, text: str):
-        """Stream text into the current (last) AI line, handling newlines."""
+        """Stream text into the current (last) AI message block."""
         if not self.ai_lines:
+            # Ensure a block exists
             self.ai_lines.append("")
-        for segment in text.split("\n"):
-            self.ai_lines[-1] += segment
-            if segment is not text.split("\n")[-1]:
-                # newline encountered, start new line
-                self.ai_lines.append("")
+        # Append text directly; retain newlines within the same block
+        self.ai_lines[-1] += text
+        
         self.live.update(self.render())
+
 
     def append_ai(self, text: str):
         self.ai_lines.append(text)
@@ -126,7 +160,12 @@ if __name__ == "__main__":
     # Test with some long lines that will wrap
     for i in range(30):
         ui.append_zork(f"Room description line {i} - This is a longer line that might wrap depending on your terminal width")
-        ui.append_ai(f"AI says: response {i} with some additional text that could cause wrapping")
+        
+        # Start a new AI message block, then stream into it
+        ui.start_ai_message()
+        ui.write_ai(f"AI says: response {i} with some additional text that could cause wrapping\n")
+        ui.write_ai(f"This is part 2 of response {i}.")
+        
         time.sleep(0.2)
     time.sleep(2)
     ui.stop()

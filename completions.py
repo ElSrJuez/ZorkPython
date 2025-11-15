@@ -8,9 +8,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Generator
 
 from zork_ai import manager, alias, client
+from zork_ai_controllers import ask_ai
 # -----------------------------------------------------------------------------
 # Helper to stream AI response into the right-hand pane (UI passed in)
 # -----------------------------------------------------------------------------
@@ -19,6 +20,7 @@ from zork_ai import manager, alias, client
 # -----------------------------------------------------------------------------
 # Prompt config
 # -----------------------------------------------------------------------------
+
 _CFG_PATH = Path(__file__).with_name("config.json")
 CFG = json.loads(_CFG_PATH.read_text(encoding="utf-8"))
 SYSTEM_PROMPT: str = CFG["system_prompt"]
@@ -42,21 +44,31 @@ def build_messages(recent_lines: List[str]) -> List[Dict[str, str]]:
         {"role": "user", "content": user_content},
     ]
 
+class OpenAICompletionService:
+    def get_stream(self, recent_lines: List[str]):
+        messages = build_messages(recent_lines)
+        # Log the exact payload sent to AI
+        with AI_LOG_PATH.open("a", encoding="utf-8") as _log:
+            _log.write(json.dumps(messages) + "\n")
+
+        stream = client.chat.completions.create(  # type: ignore[arg-type]
+            model=manager.get_model_info(alias).id,  # type: ignore[attr-defined]
+            messages=messages,
+            stream=True,
+        )
+
+        full_parts: List[str] = []
+        for chunk in stream:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                full_parts.append(delta)
+                yield delta
+        return "".join(full_parts)
+
 
 def stream_to_ui(ui, recent_lines: List[str]):
-    """Generate an AI assistant response and stream it to the UI pane."""
-    messages = build_messages(recent_lines)
-    # Log the exact payload sent to AI
-    with AI_LOG_PATH.open("a", encoding="utf-8") as _log:
-        _log.write(json.dumps(messages) + "\n")
+    """Generate an AI assistant response and stream it to the UI via controller."""
+    # Delegate to the controller to manage UI lifecycle and finalization
+    ask_ai(ui, recent_lines, OpenAICompletionService())
 
-    stream = client.chat.completions.create(  # type: ignore[arg-type]
-        model=manager.get_model_info(alias).id,  # type: ignore[attr-defined]
-        messages=messages,
-        stream=True,
-    )
 
-    for chunk in stream:
-        delta = chunk.choices[0].delta.content
-        if delta:
-            ui.write_ai(delta)
