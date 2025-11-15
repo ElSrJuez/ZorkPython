@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "game-intent": {
+      "type": "string",
+      "description": "Brief, non-duplicative summary of the current in-game situation."
+    },
+    "game-meta-intent": {
+      "type": "string",
+      "description": "High-level interpretation of the wider goal or story direction."
+    },
+    "hidden-next-command": {
+      "type": "string",
+      "description": "One actionable parser command the player could enter next."
+    },
+    "hidden-next-command-confidence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Confidence (0–100) the command will not only heuristically go through, but also actually progress the player in the game story."
+    },
+    "narration": {
+      "type": "string",
+      "description": "Short, fun, factual in-role commentary of events so far."
+    }
+  },
+  "required": [
+    "game-intent",
+    "game-meta-intent",
+    "hidden-next-command",
+    "hidden-next-command-confidence",
+    "narration"
+  ],
+  "additionalProperties": false
+}

@@ -55,6 +55,7 @@ class OpenAICompletionService:
             model=manager.get_model_info(alias).id,  # type: ignore[attr-defined]
             messages=messages,
             stream=True,
+            max_tokens=300
         )
 
         full_parts: List[str] = []
