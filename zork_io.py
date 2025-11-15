@@ -24,13 +24,14 @@ def zork_input(prompt=''):
     ui = _ui_instance()
     user_input = ui.read_prompt(prompt)
     game_log(user_input)
-    # Here you can add any processing you want to do with user_input
+    # Echo the command in light green within the Zork output pane
+    ui.append_zork(f"[bright_green]> {user_input}[/]")
     return user_input
 
 def zork_print(message=""):
     ui = _ui_instance()
     ui.append_zork(message)
-    print(message)
+    #print(message)
     # log printed messages if needed
     
     try:
