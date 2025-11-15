@@ -1,13 +1,37 @@
 {
   "type": "object",
   "properties": {
+    "game-last-objects": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "One item per object: 'object — room — actions' (no extra prose)."
+      },
+      "minItems": 5,
+      "maxItems": 5,
+      "description": "Short list (up to 5) of the most recent objects seen; include the room and any actions taken."
+    },
+    "game-room-path": {
+      "type": "string",
+      "description": "A single sentence that succintly mentions exactly the last 4 rooms (in order) visited and how the player moved to each."
+    },
+    "game-last-changes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "One item per change: 'change — trigger' (no extra prose)."
+      },
+      "minItems": 5,
+      "maxItems": 5,
+      "description": "Short list (up to 5) of the most recent world changes and what triggered them."
+    },
     "game-intent": {
       "type": "string",
-      "description": "Brief, non-duplicative summary of the current in-game situation."
+      "description": "Brief, non-duplicative summary of what the game is presenting as the current situation."
     },
     "game-meta-intent": {
       "type": "string",
-      "description": "High-level interpretation of the wider goal or story direction."
+      "description": "High-level interpretation of the game's wider goal or story direction."
     },
     "hidden-next-command": {
       "type": "string",
@@ -21,7 +45,7 @@
     },
     "narration": {
       "type": "string",
-      "description": "Short, fun, factual in-role commentary of events so far."
+      "description": "Fun, explanatory without being duplicit, in-role commentary intended to enhance what's already on the screen without being redundant, spoiler-y or overtly inventive. Make it one or two short sentences."
     }
   },
   "required": [
