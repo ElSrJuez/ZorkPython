@@ -1,6 +1,7 @@
 from zork_logging import game_log, system_log, game_log_json
 import inspect
 from zork_ui import RichZorkUI
+from completions import stream_to_ui
 
 _ui: RichZorkUI | None = None
 
@@ -22,6 +23,11 @@ def zork_input(prompt=''):
     # collect only the message text
     messages_only = [msg for msg, caller in message_collection]
     ui = _ui_instance()
+
+    # Send recent interactions (printed messages) to AI helper *before* prompting
+    stream_to_ui(ui, messages_only)
+
+    # Now read user input
     user_input = ui.read_prompt(prompt)
     game_log(user_input)
     # Echo the command in light green within the Zork output pane

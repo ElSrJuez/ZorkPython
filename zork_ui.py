@@ -111,6 +111,17 @@ class RichZorkUI:
         self.zork_lines.append(text)
         self.live.update(self.render())
 
+    def write_ai(self, text: str):
+        """Stream text into the current (last) AI line, handling newlines."""
+        if not self.ai_lines:
+            self.ai_lines.append("")
+        for segment in text.split("\n"):
+            self.ai_lines[-1] += segment
+            if segment is not text.split("\n")[-1]:
+                # newline encountered, start new line
+                self.ai_lines.append("")
+        self.live.update(self.render())
+
     def append_ai(self, text: str):
         self.ai_lines.append(text)
         self.live.update(self.render())
