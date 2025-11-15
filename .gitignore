@@ -5,3 +5,40 @@ __pycache__/
 .venv/
 gcm-diagnose.log
 AGENTS.md
+
+# Logs
+*.log
+
+# Virtual environments
+venv/
+.env
+.env.*
+*.env
+
+# Build and distribution artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test and tooling caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Databases
+*.sqlite
+*.db
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# Personal notes (optional)
+scratchpad/*
+!scratchpad/.gitkeep
