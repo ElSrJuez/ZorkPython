@@ -138,6 +138,17 @@ class RichZorkUI:
         if hasattr(self, "live"):
             self.live.update(self.render())
 
+        # Speak narration using Piper if available and text seems plain
+        if full_text:
+            try:
+                # Heuristic: skip if it looks like JSON (has braces)
+                if "{" not in full_text and "}" not in full_text:
+                    from zork_voice import speak
+                    speak(full_text)
+            except Exception as exc:  # noqa: BLE001
+                from zork_logging import system_log
+                system_log(f"Voice playback failed: {exc}")
+
 
     def write_ai(self, text: str):
         """Stream text into the current (last) AI message block."""
