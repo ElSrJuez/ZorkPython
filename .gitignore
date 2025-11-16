@@ -6,6 +6,10 @@ __pycache__/
 gcm-diagnose.log
 AGENTS.md
 
+res/*
+!res/voices/.gitkeep
+!res/wavtmp/.gitkeep
+
 # Logs
 *.log
 
