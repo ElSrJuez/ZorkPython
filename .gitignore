@@ -6,9 +6,13 @@ __pycache__/
 gcm-diagnose.log
 AGENTS.md
 
-res/*
+# keep selected sub-folders and their .gitkeep placeholders
+res/voices/*
 !res/voices/.gitkeep
+res/wavtmp/*
 !res/wavtmp/.gitkeep
+res/test_run/*
+!res/test_run/.gitkeep
 
 # Logs
 *.log

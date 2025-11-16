@@ -4,6 +4,7 @@
   "user_prompt_template": "Here are the game's last responses interleaved with the last gamer commands {game_log}",
   "stream_only_narration": true, 
   "max_tokens": 1000,
+  "llm_model_alias": "Phi-3.5-mini-instruct-cuda-gpu",
   "voice_settings": {
     "voice": "en_US-lessac-high"
   },
