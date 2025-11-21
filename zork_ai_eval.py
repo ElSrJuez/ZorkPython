@@ -130,22 +130,33 @@ def main() -> None:
     output_path.write_text("", encoding="utf-8")
 
     interactions: List[str] = []
+    game_lines: List[str] = []
+    player_lines: List[str] = []
     invocation_count = 0
 
     for entry in _iter_jsonl(player_log):
         if "printed_messages" in entry:
-            if _append_printed(entry["printed_messages"], interactions) and interactions:
+            added = _append_printed(entry["printed_messages"], interactions)
+            if added:
+                game_lines.extend(added)
+            if added and interactions:
                 zork_ai.create_narration_context(
                     interactions,
                     max_log_lines=args.max_log_lines,
                 )
                 invocation_count += 1
         elif "message" in entry:
-            _append_command(entry["message"], interactions)
+            appended_cmd = _append_command(entry["message"], interactions)
+            if appended_cmd:
+                player_lines.append(appended_cmd)
 
     print(
         f"Replayed {invocation_count} narration calls -> {output_path}"
     )
+
+    if args.parse:
+        run_lines = _extract_narrations(output_path)
+        _print_three_columns(game_lines, player_lines, run_lines)
 
 
 if __name__ == "__main__":
