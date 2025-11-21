@@ -17,6 +17,9 @@ res/test_run/run/*
 !res/test_run/run/.gitkeep
 res/test_run/reference/*
 !res/test_run/reference/.gitkeep
+res/test_run/out/*
+!res/test_run/out/.gitkeep
+
 
 # Logs
 *.log

@@ -19,6 +19,7 @@ A modern Python playground that fuses the beloved Infocom classic **Zork I** wit
 | **Authentic Zork Gameplay** | Complete port of Zork I: all rooms, puzzles, treasures, troll, thief, etc. (see `zork_expanded.py`). |
 | **AI Gaming Pal** | OpenAI-compatible model (local or cloud) produces structured JSON with: `game-intent`, `game-meta-intent`, `hidden-next-command`, `hidden-next-command-confidence`, and `narration`. |
 | **Rich Two-Pane UI** | Left = original game transcript. Right = AI narrator streaming in real time with colour-alternating blocks (`zork_ui.py`). |
+| **Voice Narration** | Leverages TTS models to unobtrusively enhance playing experience |
 | **Structured-Output Pipeline** | `completions.py` injects `response_schema.json` into the prompt, requests strict JSON, logs every turn, and streams narration (or full JSON for debugging). |
 | **Config Toggles** | `config.json` controls model prompt, token limits, and `stream_only_narration` switch. |
 
@@ -96,7 +97,8 @@ Key `config.json` fields:
 2. **Second-stage narration** – feed the first-instance structured JSON so that the narration is an experience enhancing second-shot narration.
 3. **Inventory helper** – AI suggests useful items or combos based on current state.
 4. **Emergency auto-rescue** – when confidence is high, AI may issue an occasional lifesaving command on behalf of the player.
-5. **Voice Narration** - Implement TTS (Piper, other) narration and optionally hiding the AI Box
+5. **Voice Narration** - Optionally Hiding the AI Box with TTS narration.
+
 
 ---
 
