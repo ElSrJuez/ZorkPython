@@ -13,6 +13,7 @@ from typing import List, Dict, Generator, Iterable, Any, Optional
 
 from zork_ai import manager, alias, client
 from zork_ai_controllers import ask_ai
+from t2i import state as t2i_state
 # -----------------------------------------------------------------------------
 # Helper to stream AI response into the right-hand pane (UI passed in)
 # -----------------------------------------------------------------------------
@@ -156,6 +157,8 @@ class OpenAICompletionService:
             narration_text = _extract_narration_from_text(content)
             obj = {"narration": narration_text or content or ""}
 
+        t2i_state.store_ai_payload(obj)
+
         # Persist response object
         with AI_LOG_PATH.open("a", encoding="utf-8") as _log:
             _log.write(json.dumps({"response": obj}, ensure_ascii=False) + "\n")
@@ -167,10 +170,10 @@ class OpenAICompletionService:
             # Stream full JSON for debugging visibility
             to_stream = json.dumps(obj, ensure_ascii=False, indent=2)
 
-
         for part in self._chunk(to_stream):
             yield part
         return to_stream
+
 
 
 def stream_to_ui(ui, recent_lines: List[str]):

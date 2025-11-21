@@ -11,6 +11,8 @@ import sys
 import os
 import pickle
 import json
+import argparse
+from pathlib import Path
 from enum import Enum, auto
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Tuple, Set, Union
@@ -18,6 +20,9 @@ from zork_io import zork_input, zork_print
 from zork_logging import game_log, system_log, init as init_logging
 import random
 import textwrap
+from zork_config import load_config, set_config_value, get_config_value
+import zork_t2i_integration
+
 
 _PLAYER_NAME = ""
 
@@ -3706,26 +3711,36 @@ class ZorkGame:
 
 
 # Main entry point
-if __name__ == "__main__":
-    game = ZorkGame()
-    game.start()#!/usr/bin/env python3
-"""
-Zork (Dungeon) - Python Implementation - Expanded Version
-Based on the C version translated from FORTRAN by way of f2c
-Original game by Tim Anderson, Marc Blank, Bruce Daniels, and Dave Lebling
-Python conversion maintains the structure and functionality of the C version
-This expanded version includes more rooms, treasures, NPCs, and puzzles from the original
-"""
 
-import sys
-import os
-import pickle
-import json
-from enum import Enum, auto
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Tuple, Set, Union
-import random
-import textwrap
+def _parse_cli_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Zork with optional GUI companion")
+    parser.add_argument(
+        "--config",
+        default=str(Path(__file__).with_name("config.json")),
+        help="Path to config.json",
+    )
+    parser.add_argument(
+        "--image-companion",
+        action="store_true",
+        help="Enable the Tkinter-based image companion GUI.",
+    )
+    return parser.parse_args()
+
+
+def _bootstrap() -> None:
+    args = _parse_cli_args()
+    load_config(args.config)
+    if args.image_companion:
+        set_config_value("enable_image_companion", True)
+    zork_t2i_integration.initialize(get_config_value("enable_image_companion", False))
+
+    game = ZorkGame()
+    game.start()
+
+
+if __name__ == "__main__":
+    _bootstrap()
+
 
 # Constants and Enumerations
 class Direction(Enum):

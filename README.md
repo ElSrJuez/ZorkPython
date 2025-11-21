@@ -21,6 +21,8 @@ A modern Python playground that fuses the beloved Infocom classic **Zork I** wit
 | **Rich Two-Pane UI** | Left = original game transcript. Right = AI narrator streaming in real time with colour-alternating blocks (`zork_ui.py`). |
 | **Structured-Output Pipeline** | `completions.py` injects `response_schema.json` into the prompt, requests strict JSON, logs every turn, and streams narration (or full JSON for debugging). |
 | **Config Toggles** | `config.json` controls model prompt, token limits, and `stream_only_narration` switch. |
+| **Text-to-Image (T2I) Companion (alpha)** | `--image-companion` flag boots a Tkinter preview window that shows deterministic prompts/seed info while we finish model selection. |
+
 
 ---
 
@@ -36,8 +38,12 @@ $ pip install -r requirements.txt
 
 # 3. Launch
 $ python zork_expanded.py
+
+# 4. Optional GUI Companion (prompts only)
+$ python zork_expanded.py --image-companion
 ```
-The Rich interface appears; type Zork commands at the bottom prompt.
+The Rich interface appears; add `--image-companion` to preview prompt text while we finalize the image backend.
+
 
 ---
 
@@ -66,6 +72,7 @@ The Rich interface appears; type Zork commands at the bottom prompt.
 ├─ completions.py          # Builds prompts, injects schema, parses LLM JSON
 ├─ zork_ai_controllers.py  # Orchestrates UI ↔︎ completion service
 ├─ zork_ui.py              # Rich TUI (game left, AI right)
+├─ zork_io.py              # Canonical entry/exit points for printing & input; hooks for AI calls
 ├─ response_schema.json    # Strict schema enforced on every AI reply
 ├─ config.json             # System prompt template & runtime flags
 └─ log/ai.jsonl            # Every request/response for analysis
@@ -78,6 +85,9 @@ Key `config.json` fields:
 | `user_prompt_template` | Wraps last N game lines into the user message. |
 | `stream_only_narration` | Toggle between full JSON or just narration streaming. |
 | `max_tokens` | Optional limit for LLM response length. |
+| `enable_image_companion` | Default opt-in flag for the Tkinter prompt preview window. |
+| `image_style_preset` | Default art-direction seed used by the prompt builder. |
+
 
 ---
 
@@ -96,7 +106,10 @@ Key `config.json` fields:
 2. **Second-stage narration** – feed the first-instance structured JSON so that the narration is an experience enhancing second-shot narration.
 3. **Inventory helper** – AI suggests useful items or combos based on current state.
 4. **Emergency auto-rescue** – when confidence is high, AI may issue an occasional lifesaving command on behalf of the player.
-5. **Voice Narration** - Implement TTS (Piper, other) narration and optionally hiding the AI Box
+5. **Voice Narration** – Implement TTS (Piper, other) narration and optionally hiding the AI Box.
+6. **Text-to-Image hooks (non-blocking)** – Add minimal image display hooks to `zork_ui` and `zork_io` (e.g., `ui.show_image(path|image)`) so a T2I service can render scene art from structured outputs without changing core flow.
+7. **Leverage existing entry/exit points** – Use `zork_print`, `collect_printed_messages`, `INTERACTIONS`, and `stream_to_ui` as canonical integration points; avoid reinventing I/O.
+8. **Keep GUI minimal** – Good-looking, but not the main objective; image panel should be optional, cache-backed, and non-blocking.
 
 ---
 

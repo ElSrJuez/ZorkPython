@@ -2,9 +2,11 @@ from zork_logging import game_log, system_log, game_log_json
 import inspect
 from zork_ui import RichZorkUI
 from completions import stream_to_ui, MAX_LOG_LINES
+import zork_t2i_integration
 
 # Rolling history of game outputs and commands
 INTERACTIONS: list[str] = []
+
 
 _ui: RichZorkUI | None = None
 
@@ -30,8 +32,11 @@ def zork_input(prompt=''):
     # Send recent interaction history to AI helper before prompting
     stream_to_ui(ui, INTERACTIONS[-MAX_LOG_LINES:])
 
+    zork_t2i_integration.handle_scene_ready(messages_only)
+
     # Now read user input
     user_input = ui.read_prompt(prompt)
+
     game_log(user_input)
     # Echo the command in light green within the Zork output pane
     ui.append_zork(f"[bright_green]> {user_input}[/]")

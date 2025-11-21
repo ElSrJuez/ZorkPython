@@ -9,5 +9,8 @@
     "voice": "en_US-lessac-high"
   },
   "voicepath": "res/voices/",
-  "audiopath": "res/wavtmp/"
+  "audiopath": "res/wavtmp/",
+  "enable_image_companion": false,
+  "image_style_preset": "monochrome ink illustration, retro text-adventure vibe, no UI chrome, no text overlays, avoid anachronisms"
 }
+
